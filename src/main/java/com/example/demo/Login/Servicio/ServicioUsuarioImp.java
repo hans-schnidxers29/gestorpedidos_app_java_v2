@@ -29,10 +29,10 @@ public class ServicioUsuarioImp implements ServicioUsuario{
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public void saveUser(UsuarioDTO usuarioDTO) {
+    public Usuario saveUser(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario(usuarioDTO.getNombre(),usuarioDTO.getApellido(),usuarioDTO.getEmail(),
                 passwordEncoder.encode(usuarioDTO.getPassword()), Arrays.asList(new Rol("ROLE_ADMIN")));
-        repositorioUsuario.save(usuario);
+        return repositorioUsuario.save(usuario);
     }
 
     @Override

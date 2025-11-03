@@ -34,7 +34,8 @@ public class Securityconfigure {
         http
                 // 🔹 Autorización de rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/registro**", "/js/**", "/css/**", "/img/**","/h2-console/**").permitAll()
+                        .requestMatchers("/css/**", "/StyleLogin/**", "/IMG/**", "/js/**").permitAll()
+                        .requestMatchers("/registro**", "/js/**", "/css/**", "/img/**","/h2-console/**","/registro/nuevo").permitAll()
                         .anyRequest().authenticated()
                 )
 

@@ -7,8 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface ServicioUsuario extends UserDetailsService {
-
-    void saveUser(UsuarioDTO usuarioDTO);
+    Usuario saveUser(UsuarioDTO usuarioDTO);
     Usuario finbyyId(Long id);
     List<Usuario> ListarUSer();
 
