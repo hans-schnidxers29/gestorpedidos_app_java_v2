@@ -1,8 +1,10 @@
 package com.example.demo.controlador;
 
 
+import com.example.demo.entidad.Cliente;
 import com.example.demo.entidad.DetallePedido;
 import com.example.demo.entidad.Pedidos;
+import com.example.demo.entidad.Productos;
 import com.example.demo.servicio.ClienteService;
 import com.example.demo.servicio.PedidoService;
 import com.example.demo.servicio.ProductoServicio;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/pedidos")
@@ -30,26 +34,10 @@ public class PedidosControlador {
     /**
      * Listar todos los pedidos
      */
-    @GetMapping
+    @GetMapping("/listarpedidos")  // ← AGREGAR la barra
     public String listarPedidos(Model model) {
         model.addAttribute("pedidos", pedidoService.listarpedidos());
         return "viewPedidos/index";
-    }
-
-    /**
-     * Listar pedidos - ruta alternativa
-     */
-    @GetMapping("/listarpedidos")
-    public String listarPedidosAlternativo(Model model) {
-        return listarPedidos(model);
-    }
-
-    /**
-     * Alias para listar pedidos
-     */
-    @GetMapping("/listar")
-    public String listarPedidosAlias(Model model) {
-        return listarPedidos(model);
     }
 
     /**
@@ -61,10 +49,13 @@ public class PedidosControlador {
         model.addAttribute("clientes", clienteService.listarcliente());
 
         Pedidos pedido = new Pedidos();
+        pedido.setCliente(new Cliente()); // Inicializar cliente vacío
+
         DetallePedido detalle = new DetallePedido();
+        detalle.setProducto(new Productos()); // Inicializar producto vacío
         pedido.getDetalles().add(detalle);
 
-        model.addAttribute("pedidos", pedido);
+        model.addAttribute("pedido", pedido);  // ← CAMBIAR a "pedido" (singular)
         return "viewPedidos/crearPedidos";
     }
 
@@ -72,7 +63,7 @@ public class PedidosControlador {
      * Guardar nuevo pedido
      */
     @PostMapping("/crear")
-    public String guardarPedido(@ModelAttribute("pedidos") Pedidos pedido,
+    public String guardarPedido(@ModelAttribute("pedido") Pedidos pedido,  // ← CAMBIAR a "pedido"
                                 RedirectAttributes redirectAttributes,
                                 Model model) {
         try {
@@ -81,23 +72,22 @@ public class PedidosControlador {
                 model.addAttribute("error", "El pedido debe tener al menos un producto");
                 model.addAttribute("productos", productoService.listarProductos());
                 model.addAttribute("clientes", clienteService.listarcliente());
-                model.addAttribute("pedidos", pedido);
+                model.addAttribute("pedido", pedido);  // ← CAMBIAR a "pedido"
                 return "viewPedidos/crearPedidos";
             }
 
             // Validar cliente
-            if (pedido.getCliente() == null ) {
+            if (pedido.getCliente() == null || pedido.getCliente().getId()== null) {  // ← Agregar validación de ID
                 model.addAttribute("error", "Debes seleccionar un cliente");
                 model.addAttribute("productos", productoService.listarProductos());
                 model.addAttribute("clientes", clienteService.listarcliente());
-                model.addAttribute("pedidos", pedido);
+                model.addAttribute("pedido", pedido);  // ← CAMBIAR a "pedido"
                 return "viewPedidos/crearPedidos";
             }
 
             // Asociar el pedido a cada detalle y calcular totales
             BigDecimal subtotalPedido = BigDecimal.ZERO;
             for (DetallePedido detalle : pedido.getDetalles()) {
-                // Solo procesar detalles con producto válido
                 if (detalle.getProducto() != null && detalle.getProducto().getId() != null) {
                     detalle.setPedido(pedido);
                     if (detalle.getSubtotal() == null) {
@@ -116,7 +106,7 @@ public class PedidosControlador {
                 model.addAttribute("error", "Debes agregar al menos un producto válido");
                 model.addAttribute("productos", productoService.listarProductos());
                 model.addAttribute("clientes", clienteService.listarcliente());
-                model.addAttribute("pedidos", pedido);
+                model.addAttribute("pedido", pedido);  // ← CAMBIAR a "pedido"
                 return "viewPedidos/crearPedidos";
             }
 
@@ -133,15 +123,13 @@ public class PedidosControlador {
             System.out.println("Pedido guardado con ID: " + pedidoGuardado.getId() +
                     " - Cliente: " + pedidoGuardado.getCliente().getNombre());
 
-            redirectAttributes.addAttribute("success", "true");
-            return "redirect:/pedidos?success=true";
+            return "redirect:/pedidos/listarpedidos?success=true";  // ← CAMBIAR redirect
 
         } catch (Exception e) {
             System.err.println("Error al guardar pedido: " + e.getMessage());
             e.printStackTrace();
-
-            redirectAttributes.addAttribute("error", "true");
-            return "redirect:/pedidos?error=true";
+            redirectAttributes.addFlashAttribute("error", "Error al guardar el pedido");
+            return "redirect:/pedidos/listarpedidos?error=true";  // ← CAMBIAR redirect
         }
     }
 
@@ -153,65 +141,98 @@ public class PedidosControlador {
         try {
             Pedidos pedido = pedidoService.pedidosByid(id);
             if (pedido == null) {
-                return "redirect:/pedidos?error=true";
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Asegurarse de que el cliente no sea null
+            if (pedido.getCliente() == null) {
+                pedido.setCliente(new Cliente());
             }
 
             model.addAttribute("productos", productoService.listarProductos());
             model.addAttribute("clientes", clienteService.listarcliente());
-            model.addAttribute("pedidos", pedido);
-            return "viewPedidos/crearPedidos";
+            model.addAttribute("pedido", pedido);
+            return "viewPedidos/actualizarPedido";
 
         } catch (Exception e) {
             System.err.println("Error al obtener pedido: " + e.getMessage());
-            return "redirect:/pedidos?error=true";
+            return "redirect:/pedidos/listarpedidos?error=true";
         }
     }
 
-    /**
-     * Ver detalles del pedido
-     */
-    @GetMapping("/ver/{id}")
-    public String verDetalles(@PathVariable Long id, Model model) {
+    @PostMapping("/actualizar/{id}")
+    public String ActualizarPedido(@PathVariable Long id,
+                                   @ModelAttribute("pedido") Pedidos pedido,
+                                   RedirectAttributes redirectAttributes) {
         try {
-            Pedidos pedido = pedidoService.pedidosByid(id);
-            if (pedido == null) {
-                return "redirect:/pedidos?error=true";
+            // Validar que el pedido existe
+            Pedidos pedidoExistente = pedidoService.pedidosByid(id);
+            if (pedidoExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Pedido no encontrado");
+                return "redirect:/pedidos/listarpedidos?error=true";
             }
 
-            model.addAttribute("pedido", pedido);
-            return "viewPedidos/verPedido";
+            // Procesar detalles antes de enviar al servicio
+            BigDecimal subtotalPedido = BigDecimal.ZERO;
+            List<DetallePedido> detallesValidos = new ArrayList<>();
+
+            if (pedido.getDetalles() != null) {
+                for (DetallePedido detalle : pedido.getDetalles()) {
+                    // Solo procesar detalles con producto válido
+                    if (detalle.getProducto() != null &&
+                            detalle.getProducto().getId() != null &&
+                            detalle.getCantidad() != null &&
+                            detalle.getCantidad() > 0) {
+
+                        // Calcular subtotal del detalle si no está calculado
+                        if (detalle.getSubtotal() == null && detalle.getPrecioUnitario() != null) {
+                            BigDecimal cantidad = new BigDecimal(detalle.getCantidad());
+                            detalle.setSubtotal(detalle.getPrecioUnitario().multiply(cantidad));
+                        }
+
+                        subtotalPedido = subtotalPedido.add(detalle.getSubtotal());
+                        detallesValidos.add(detalle);
+                    }
+                }
+            }
+
+            // Establecer los detalles válidos
+            pedido.setDetalles(detallesValidos);
+
+            // Calcular y establecer totales
+            pedido.setSubtotal(subtotalPedido);
+
+            if (pedido.getImpuesto() == null) {
+                pedido.setImpuesto(BigDecimal.ZERO);
+            }
+
+            BigDecimal total = subtotalPedido.add(pedido.getImpuesto());
+            pedido.setTotal(total);
+
+            // El servicio se encarga de todo lo demás
+            pedidoService.Updatepedido(id, pedido);
+
+            redirectAttributes.addFlashAttribute("success", "Pedido actualizado correctamente");
+            return "redirect:/pedidos/listarpedidos?success=true";
 
         } catch (Exception e) {
-            System.err.println("Error al obtener pedido: " + e.getMessage());
-            return "redirect:/pedidos?error=true";
+            System.err.println("Error al actualizar pedido: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar el pedido: " + e.getMessage());
+            return "redirect:/pedidos/listarpedidos?error=true";
         }
     }
 
-    /**
-     * Eliminar pedido
-     */
     @GetMapping("/eliminar/{id}")
     public String eliminarPedido(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             pedidoService.deletepedidos(id);
             System.out.println("Pedido eliminado con ID: " + id);
-            redirectAttributes.addAttribute("success", "true");
-            return "redirect:/pedidos?success=true";
+            return "redirect:/pedidos/listarpedidos?success=true";
 
         } catch (Exception e) {
             System.err.println("Error al eliminar pedido: " + e.getMessage());
-            redirectAttributes.addAttribute("error", "true");
-            return "redirect:/pedidos?error=true";
+            return "redirect:/pedidos/listarpedidos?error=true";
         }
-    }
-
-    /**
-     * Endpoint alternativo para crear pedidos (compatibilidad con rutas antiguas)
-     */
-    @PostMapping("/crear/pedidos")
-    public String guardarPedidoAlternativo(@ModelAttribute("pedidos") Pedidos pedido,
-                                           RedirectAttributes redirectAttributes,
-                                           Model model) {
-        return guardarPedido(pedido, redirectAttributes, model);
     }
 }

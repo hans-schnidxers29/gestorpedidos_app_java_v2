@@ -11,6 +11,6 @@ public interface PedidoService {
     Pedidos guardarpedidos(Pedidos pedidos);
     void deletepedidos(Long id);
     Pedidos pedidosByid(Long id);
-    void Updatepedido(Pedidos pedidos);
+    void Updatepedido(Long id,Pedidos pedidos);
 
 }
