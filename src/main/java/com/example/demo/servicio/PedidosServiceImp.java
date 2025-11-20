@@ -110,4 +110,14 @@ public class PedidosServiceImp implements PedidoService{
                     " - Cantidad nueva: " + productoBD.getCantidad());
         }
     }
+
+    @Override
+    public Long estadoCancelado(EstadoPedido estadoPedido) {
+        return repositorio.countByEstadoCancelado(EstadoPedido.CANCELADO);
+    }
+
+    @Override
+    public Long estadoCEntregado(EstadoPedido estadoPedido) {
+        return repositorio.countByEstadoEntregado(EstadoPedido.ENTREGADO);
+    }
 }

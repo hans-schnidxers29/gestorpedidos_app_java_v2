@@ -14,46 +14,57 @@ public class Venta {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id")
+    @JoinColumn(name = "producto_id", nullable = false)
     private Productos producto;
 
-    @Column(name = "fecha_venta")
+    @Column(name = "fecha_venta", nullable = false)
     private LocalDateTime fechaVenta = LocalDateTime.now();
 
-    @Column(name = "precio")
+    @Column(name = "precio", nullable = false)
     private BigDecimal precio;
+
+    @Column(name = "cantidad", nullable = false)
+    private Integer cantidad ;
 
     @Column(name = "descuento")
     private BigDecimal descuento;
 
-    @Column(name = "total")
+    @Column(name = "total", nullable = false)
     private BigDecimal total;
 
+    @Column(name = "mediodepago", nullable = false)
+    private String metodoDepago;
 
     public Venta() {
     }
 
-    public Venta(Cliente cliente, Productos producto, LocalDateTime fechaVenta, BigDecimal precio, BigDecimal descuento, BigDecimal total) {
+    public Venta(Cliente cliente, Long id, Productos producto, LocalDateTime fechaVenta, BigDecimal precio,
+                 Integer cantidad, BigDecimal descuento, BigDecimal total, String metodoDepago) {
         this.cliente = cliente;
+        this.id = id;
         this.producto = producto;
         this.fechaVenta = fechaVenta;
         this.precio = precio;
+        this.cantidad = cantidad;
         this.descuento = descuento;
         this.total = total;
+        this.metodoDepago = metodoDepago;
     }
 
-    public Venta(Long id, Cliente cliente, Productos producto, LocalDateTime fechaVenta, BigDecimal precio, BigDecimal descuento, BigDecimal total) {
-        this.id = id;
+    public Venta(Cliente cliente, Productos producto, LocalDateTime fechaVenta, BigDecimal precio,
+                 Integer cantidad, BigDecimal descuento, BigDecimal total, String metodoDepago) {
         this.cliente = cliente;
         this.producto = producto;
         this.fechaVenta = fechaVenta;
         this.precio = precio;
+        this.cantidad = cantidad;
         this.descuento = descuento;
         this.total = total;
+        this.metodoDepago = metodoDepago;
     }
 
     public Long getId() {

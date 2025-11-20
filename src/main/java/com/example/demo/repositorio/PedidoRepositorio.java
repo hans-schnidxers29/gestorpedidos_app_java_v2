@@ -12,4 +12,17 @@ public interface PedidoRepositorio extends JpaRepository<Pedidos,Long> {
 
     @Query("SELECT COUNT(p) FROM Pedidos p WHERE p.estado = :estado")
     long contarPorEstado(@Param("estado") EstadoPedido estado);
+
+    // Query para contar pedidos PENDIENTES
+    @Query("SELECT COUNT(p) FROM Pedidos p WHERE p.estado = :estado")
+    Long countByEstadoPendiente(@Param("estado") EstadoPedido estado);
+
+    // Query para contar pedidos ENTREGADOS
+    @Query("SELECT COUNT(p) FROM Pedidos p WHERE p.estado = :estado")
+    Long countByEstadoEntregado(@Param("estado") EstadoPedido estado);
+
+    // Query para contar pedidos CANCELADOS
+    @Query("SELECT COUNT(p) FROM Pedidos p WHERE p.estado = :estado")
+    Long countByEstadoCancelado(@Param("estado") EstadoPedido estado);
+
 }

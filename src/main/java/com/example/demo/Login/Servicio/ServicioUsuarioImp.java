@@ -67,7 +67,7 @@ public class ServicioUsuarioImp implements ServicioUsuario{
            user.setNombre(usuario.getNombre());
            user.setApellido(usuario.getApellido());
            user.setEmail(usuario.getEmail());
-           user.setPassword(passwordEncoder.encode(usuario.getPassword()));
+           user.setRoles(usuario.getRoles());
            repositorioUsuario.save(user);
         }catch (Exception e){
             System.out.println("Error al actualizar usuario: " + e.getMessage());

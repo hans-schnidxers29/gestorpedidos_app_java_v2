@@ -81,31 +81,31 @@
 </head>
 <body>
 
-<!-- Sidebar -->
-<nav class="sidebar" id="sidebar">
-    <!-- Header -->
-    <div class="sidebar-header">
-        <a href="/" class="logo">
-            <i class="fas fa-store"></i>
-            <span class="logo-text">Mi Sistema</span>
-        </a>
-        <button class="toggle-btn" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-
-    <!-- User Info -->
-    <div class="user-info" sec:authorize="isAuthenticated()">
-        <div class="user-avatar">
-            <i class="fas fa-user"></i>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <!-- Header -->
+        <div class="sidebar-header">
+            <a href="/" class="logo">
+                <i class="fas fa-store"></i>
+                <span class="logo-text">Mi Sistema</span>
+            </a>
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-        <div class="user-details">
-            <div class="user-name" sec:authentication="name">Usuario</div>
-            <div class="user-role" sec:authentication="principal.authorities">ROLE</div>
-        </div>
-    </div>
 
-    <!-- Navigation Menu -->
+        <!-- User Info -->
+        <div class="user-info" sec:authorize="isAuthenticated()">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+                <div class="user-name" sec:authentication="name">Usuario</div>
+                <div class="user-role" sec:authentication="principal.authorities">ROLE</div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
     <ul class="nav-menu">
         <li class="nav-item">
             <a href="/" class="nav-link">

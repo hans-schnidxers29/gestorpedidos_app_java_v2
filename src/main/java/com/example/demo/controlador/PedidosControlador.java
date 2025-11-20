@@ -35,6 +35,8 @@ public class PedidosControlador {
     public String listarPedidos(Model model) {
         model.addAttribute("pedidos", pedidoService.listarpedidos());
         model.addAttribute("Estadisticas",pedidoService.ContarPorestados(EstadoPedido.PENDIENTE));
+        model.addAttribute("Estadisticas2",pedidoService.estadoCEntregado(EstadoPedido.ENTREGADO));
+        model.addAttribute("Estadisticas3",pedidoService.estadoCancelado(EstadoPedido.CANCELADO));
         return "viewPedidos/index";
     }
 
@@ -302,5 +304,108 @@ public class PedidosControlador {
         }
     }
 
+    @GetMapping("/Entregar/{id}")
+    public String entregarPedido(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Obtener el pedido existente
+            Pedidos pedidoExistente = pedidoService.pedidosByid(id);
+
+            if (pedidoExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Pedido no encontrado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Verificar que el pedido no esté ya entregado o cancelado
+            if (pedidoExistente.getEstado() == EstadoPedido.ENTREGADO) {
+                redirectAttributes.addFlashAttribute("error", "El pedido ya está entregado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            if (pedidoExistente.getEstado() == EstadoPedido.CANCELADO) {
+                redirectAttributes.addFlashAttribute("error", "No se puede entregar un pedido cancelado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Guardar el estado anterior
+            EstadoPedido estadoAnterior = pedidoExistente.getEstado();
+
+            // Cambiar el estado a ENTREGADO
+            pedidoExistente.setEstado(EstadoPedido.ENTREGADO);
+
+            // Si el estado anterior no era ENTREGADO, descontar el stock
+            if (estadoAnterior != EstadoPedido.ENTREGADO) {
+                System.out.println("Estado cambió a ENTREGADO - Descontando stock...");
+                try {
+                    pedidoService.DescantorStock(pedidoExistente);
+                    System.out.println("Stock descontado exitosamente");
+                } catch (Exception e) {
+                    System.err.println("Error al descontar stock: " + e.getMessage());
+                    redirectAttributes.addFlashAttribute("error",
+                            "Error al descontar stock: " + e.getMessage());
+                    return "redirect:/pedidos/listarpedidos?error=true";
+                }
+            }
+
+            // Actualizar el pedido
+            pedidoService.Updatepedido(id, pedidoExistente);
+
+            System.out.println("Pedido " + id + " marcado como ENTREGADO");
+            redirectAttributes.addFlashAttribute("success",
+                    "Pedido #" + id + " entregado exitosamente");
+            return "redirect:/pedidos/listarpedidos?success=true";
+
+        } catch (Exception e) {
+            System.err.println("Error al entregar pedido: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al entregar el pedido: " + e.getMessage());
+            return "redirect:/pedidos/listarpedidos?error=true";
+        }
+    }
+
+
+    @GetMapping("/Cancelar/{id}")
+    public String cancelarPedido(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Obtener el pedido existente
+            Pedidos pedidoExistente = pedidoService.pedidosByid(id);
+
+            if (pedidoExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Pedido no encontrado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Verificar que el pedido no esté ya cancelado
+            if (pedidoExistente.getEstado() == EstadoPedido.CANCELADO) {
+                redirectAttributes.addFlashAttribute("error", "El pedido ya está cancelado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Verificar que el pedido no esté entregado
+            if (pedidoExistente.getEstado() == EstadoPedido.ENTREGADO) {
+                redirectAttributes.addFlashAttribute("error",
+                        "No se puede cancelar un pedido que ya fue entregado");
+                return "redirect:/pedidos/listarpedidos?error=true";
+            }
+
+            // Cambiar el estado a CANCELADO
+            pedidoExistente.setEstado(EstadoPedido.CANCELADO);
+
+            // Actualizar el pedido
+            pedidoService.Updatepedido(id, pedidoExistente);
+
+            System.out.println("Pedido " + id + " cancelado exitosamente");
+            redirectAttributes.addFlashAttribute("success",
+                    "Pedido #" + id + " cancelado exitosamente");
+            return "redirect:/pedidos/listarpedidos?success=true";
+
+        } catch (Exception e) {
+            System.err.println("Error al cancelar pedido: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al cancelar el pedido: " + e.getMessage());
+            return "redirect:/pedidos/listarpedidos?error=true";
+        }
+    }
 
 }

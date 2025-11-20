@@ -65,7 +65,7 @@ public class UsuarioControlador {
         }
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public String DeleteUsuario(@PathVariable("id") Long id, RedirectAttributes redirectAttributes){
         try{
             usuarioservico.deleteUser(id);

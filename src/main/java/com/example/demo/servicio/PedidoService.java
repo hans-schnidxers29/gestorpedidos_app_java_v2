@@ -14,4 +14,6 @@ public interface PedidoService {
     void Updatepedido(Long id,Pedidos pedidos);
     long ContarPorestados(EstadoPedido estadoPedido);
     void DescantorStock(Pedidos pedidos);
+    Long estadoCancelado(EstadoPedido estadoPedido);
+    Long estadoCEntregado(EstadoPedido estadoPedido);
 }
