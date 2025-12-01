@@ -59,13 +59,6 @@ public class UsuarioControlador {
     @PostMapping("/usuario/nuevo")
     public String RegistraNuevoUsuario(@ModelAttribute ("usuario")Usuario usuario, RedirectAttributes redirectAttributes){
         try {
-
-            List<Rol> roles = usuario.getRoles().stream()
-                    .map(r -> rolServicio.findById(r.getId()))
-                    .collect(Collectors.toList());
-
-            usuario.setRoles(roles);
-
             usuarioservico.saveUserDto(usuario);
             return "redirect:/perfil?success";
         }catch (Exception e){
