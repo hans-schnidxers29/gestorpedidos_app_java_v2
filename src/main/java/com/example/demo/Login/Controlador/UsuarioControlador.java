@@ -1,7 +1,6 @@
 package com.example.demo.Login.Controlador;
 
 
-import com.example.demo.Login.Rol;
 import com.example.demo.Login.Servicio.RolServicio;
 import com.example.demo.Login.Servicio.ServicioUsuario;
 import com.example.demo.Login.Usuario;
@@ -11,9 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("registro")
@@ -65,7 +61,7 @@ public class UsuarioControlador {
             System.err.println("Error al guardar Usuario: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error",
                     "Error al guardar Usuario: " + e.getMessage());
-             return "redirect:/registro/usuario?error";
+            return "redirect:/registro/usuario?error";
         }
     }
 
