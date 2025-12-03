@@ -30,8 +30,11 @@ public class ServicioUsuarioImp implements ServicioUsuario{
 
     @Override
     public Usuario saveUser(UsuarioDTO usuarioDTO) {
+        String rolaAdmin = new String();
+        rolaAdmin = "ROLE_ADMIN";
+
         Usuario usuario = new Usuario(usuarioDTO.getNombre(),usuarioDTO.getApellido(),usuarioDTO.getEmail(),
-                passwordEncoder.encode(usuarioDTO.getPassword()), Arrays.asList(new Rol("ROLE_ADMIN")));
+                passwordEncoder.encode(usuarioDTO.getPassword()),Arrays.asList(new Rol(rolaAdmin)));
         return repositorioUsuario.save(usuario);
     }
 
