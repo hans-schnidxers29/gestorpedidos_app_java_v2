@@ -139,7 +139,7 @@
     <div class="alert alert-info" th:if="${#lists.isEmpty(ventas)}">
         <i class="fas fa-info-circle me-2"></i>
         <strong>No hay ventas registradas.</strong>
-        <a class="btn btn-primary btn-sm ms-2" href="/ventas/nuevo">
+        <a class="btn btn-primary btn-sm ms-2" href="/ventas/crear">
             <i class="fas fa-plus me-1"></i>Nueva Venta
         </a>
     </div>
@@ -148,7 +148,7 @@
     <div th:unless="${#lists.isEmpty(ventas)}">
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <span class="text-muted">Mostrando ventas registradas</span>
-            <a class="btn btn-primary" href="/ventas/nuevo">
+            <a class="btn btn-primary" href="/ventas/crear">
                 <i class="fas fa-plus me-2"></i>Nueva Venta
             </a>
         </div>
