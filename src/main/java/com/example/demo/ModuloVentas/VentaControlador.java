@@ -35,6 +35,7 @@ public class VentaControlador {
     private ClienteService clienteService;
 
     private PdfServicio pdfServicio;
+  
     // Inyectar el servicio
     public VentaControlador(PdfServicio pdfServicio) {
         this.pdfServicio = pdfServicio;

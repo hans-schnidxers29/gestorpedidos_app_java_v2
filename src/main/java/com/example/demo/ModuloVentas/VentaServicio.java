@@ -14,5 +14,7 @@ public interface VentaServicio {
     Venta buscarVenta(Long id);
     void DescontarStock(Venta venta);
 
+    void descontarStock(Venta venta);
+
 
 }
