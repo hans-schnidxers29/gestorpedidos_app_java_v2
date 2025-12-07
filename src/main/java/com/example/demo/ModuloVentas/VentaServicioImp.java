@@ -45,9 +45,9 @@ public class VentaServicioImp implements VentaServicio {
         return repositorioVenta.findById(id).orElseThrow(() -> new RuntimeException("No existe la venta"));
     }
 
-    @Transactional
     @Override
-    public void descontarStock(Venta venta) {
+    @Transactional
+    public void DescontarStock(Venta venta) {
         for (DetalleVenta detalle : venta.getDetalles()) {
 
             if (detalle.getProducto() == null || detalle.getProducto().getId() == null) {
