@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" rel="stylesheet">
+</head>
+<body>
+<table id="example" class="display">
+    <thead>
+    <tr>
+        <th><i class="fas fa-user me-2"></i>Nombre</th>
+        <th><i class="fas fa-user me-2"></i>Apellido</th>
+        <th><i class="fas fa-envelope me-2"></i>Email</th>
+        <th><i class="fas fa-phone me-2"></i>Teléfono</th>
+        <th><i class="fas fa-city me-2"></i>Ciudad</th>
+        <th><i class="fas fa-globe me-2"></i>País</th>
+        <th><i class="fas fa-shopping-bag me-2"></i>Pedidos</th>
+        <th><i class="fas fa-map-pin me-2"></i>Código Postal</th>
+        <th class="text-center"><i class="fas fa-cog me-2"></i>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cliente : ${clientes}">
+        <td th:text="${cliente.nombre}">nombre</td>
+        <td th:text="${cliente.apellido}">apellido</td>
+        <td th:text="${cliente.email}">email</td>
+        <td th:text="${cliente.telefono}">telefono</td>
+        <td th:text="${cliente.ciudad}">ciudad</td>
+        <td th:text="${cliente.pais}">país</td>
+        <td>
+            <span class="badge bg-primary" th:text="${cliente.pedidos.size()}">0</span>
+        </td>
+        <td th:text="${cliente.codigoPostal}">código postal</td>
+        <td class="text-center">
+            <a th:href="@{/cliente/actualizar/{id}(id=${cliente.id})}"
+               class="btn btn-info btn-sm me-1">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a th:href="@{/cliente/delete/{id}(id=${cliente.id})}"
+               class="btn btn-danger btn-sm"
+               onclick="return confirmarEliminacion('¿Estás seguro de eliminar este cliente?')">
+                <i class="fas fa-trash"></i> Eliminar
+            </a>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Office</th>
+        <th>Age</th>
+        <th>Start date</th>
+        <th>Salary</th>
+    </tr>
+    </tfoot>
+</table>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+<script>
+    new DataTable('#example', {
+        columnDefs: [
+            {
+                targets: 2,
+                visible: false,
+                searchable: false
+            },
+            {
+                targets: 3,
+                visible: false
+            }
+        ]
+    });
+</script>
+
+
+</body>
+</html>
