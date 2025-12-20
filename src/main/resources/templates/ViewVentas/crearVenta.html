@@ -181,20 +181,28 @@
                                    type="number" value="1">
                         </div>
 
+                        <!--
+                        ═══════════════════════════════════════════════════════════════
+                        CAMBIO #1: step="0.01" → step="0.001" (3 decimales)
+                        ═══════════════════════════════════════════════════════════════
+                        -->
                         <div class="col-md-2">
                             <label class="form-label">Precio</label>
                             <input class="form-control precio-unitario" name="detalles[0].precioUnitario" readonly
-                                   step="0.01"
+                                   step="0.001"
                                    type="number">
                         </div>
-
+                        <!--
+                        ═══════════════════════════════════════════════════════════════
+                        CAMBIO #2: step="0.01" → step="0.001" (3 decimales)
+                        ═══════════════════════════════════════════════════════════════
+                        -->
                         <div class="col-md-2">
                             <label class="form-label">Subtotal</label>
                             <input class="form-control subtotal-item" name="detalles[0].subtotal" readonly
-                                   step="0.01"
+                                   step="0.001"
                                    type="number">
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -237,9 +245,19 @@
 <!-- JS Personalizado -->
 <script th:src="@{/JavsScript/js/FuncionesAlert.js}"></script>
 
+<!--
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         JAVASCRIPT - CAMBIOS PARA 3 DECIMALES                 ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+-->
 <script>
     let detalleCount = 1;
 
+    /**
+     * Agrega un nuevo detalle de producto dinámicamente
+     * CAMBIOS:
+     * - step="0.01" → step="0.001" en inputs de precio y subtotal
+     */
     function agregarDetalle() {
         const container = document.getElementById('detallesContainer');
         const opciones = document.querySelector('.producto-select').innerHTML;
@@ -266,16 +284,22 @@
                        value="1" onchange="calcularSubtotal(${detalleCount})">
             </div>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 CAMBIO #3: step="0.01" → step="0.001" (3 decimales)
+                 ═══════════════════════════════════════════════════════════════ -->
             <div class="col-md-2">
                 <label class="form-label">Precio</label>
-                <input type="number" readonly step="0.01"
+                <input type="number" readonly step="0.001"
                        name="detalles[${detalleCount}].precioUnitario"
                        class="form-control precio-unitario">
             </div>
 
+            <!-- ═══════════════════════════════════════════════════════════════
+                 CAMBIO #4: step="0.01" → step="0.001" (3 decimales)
+                 ═══════════════════════════════════════════════════════════════ -->
             <div class="col-md-2">
                 <label class="form-label">Subtotal</label>
-                <input type="number" readonly step="0.01"
+                <input type="number" readonly step="0.001"
                        name="detalles[${detalleCount}].subtotal"
                        class="form-control subtotal-item">
                 <button type="button" class="btn btn-danger btn-sm mt-2"
@@ -291,11 +315,17 @@
         detalleCount++;
     }
 
+    /**
+     * Elimina un detalle de producto
+     */
     function eliminarDetalle(btn) {
         btn.closest(".detalle-item").remove();
         calcularTotal();
     }
 
+    /**
+     * Actualiza el precio del producto seleccionado
+     */
     function actualizarPrecio(i) {
         const select = document.querySelector(`select[name="detalles[${i}].producto.id"]`);
         const precio = select.options[select.selectedIndex].getAttribute("data-precio");
@@ -303,14 +333,26 @@
         calcularSubtotal(i);
     }
 
+    /**
+     * Calcula el subtotal de un detalle específico
+     * CAMBIO #5: toFixed(2) → toFixed(3) para mantener 3 decimales
+     */
     function calcularSubtotal(i) {
         const cant = parseFloat(document.querySelector(`input[name="detalles[${i}].cantidad"]`).value);
         const precio = parseFloat(document.querySelector(`input[name="detalles[${i}].precioUnitario"]`).value);
         const res = cant * precio;
-        document.querySelector(`input[name="detalles[${i}].subtotal"]`).value = res.toFixed(2);
+
+        // ═══════════════════════════════════════════════════════════════
+        // CAMBIO #5: .toFixed(2) → .toFixed(3) (3 decimales)
+        // ═══════════════════════════════════════════════════════════════
+        document.querySelector(`input[name="detalles[${i}].subtotal"]`).value = res.toFixed(3);
         calcularTotal();
     }
 
+    /**
+     * Calcula el total general de la venta
+     * CAMBIOS #6 y #7: toFixed(2) → toFixed(3) para subtotal y total
+     */
     function calcularTotal() {
         let subtotal = 0;
         document.querySelectorAll('.subtotal-item').forEach(s => subtotal += parseFloat(s.value) || 0);
@@ -318,10 +360,20 @@
         const impuesto = parseFloat(document.getElementById('impuesto').value) || 0;
         const total = subtotal + subtotal * (impuesto / 100);
 
-        document.getElementById('subtotalGeneral').value = subtotal.toFixed(2);
-        document.getElementById('totalVenta').value = total.toFixed(2);
+        // ═══════════════════════════════════════════════════════════════
+        // CAMBIO #6: .toFixed(2) → .toFixed(3) (3 decimales)
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('subtotalGeneral').value = subtotal.toFixed(3);
+
+        // ═══════════════════════════════════════════════════════════════
+        // CAMBIO #7: .toFixed(2) → .toFixed(3) (3 decimales)
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('totalVenta').value = total.toFixed(3);
     }
 
+    /**
+     * Alterna la visibilidad del sidebar
+     */
     function toggleSidebar() {
         document.getElementById("sidebar").classList.toggle("collapsed");
         document.getElementById("mainContent").classList.toggle("expanded");

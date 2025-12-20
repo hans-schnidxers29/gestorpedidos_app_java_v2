@@ -120,4 +120,29 @@ public class PedidosServiceImp implements PedidoService{
     public Long estadoCEntregado(EstadoPedido estadoPedido) {
         return repositorio.countByEstadoEntregado(EstadoPedido.ENTREGADO);
     }
+
+    @Override
+    @Transactional
+    public void EntregarPedido(Long id) {
+        Pedidos pedido = repositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+
+        // Validaciones
+        if (pedido.getEstado() == EstadoPedido.ENTREGADO) {
+            throw new IllegalStateException("El pedido ya está entregado");
+        }
+
+        if (pedido.getEstado() == EstadoPedido.CANCELADO) {
+            throw new IllegalStateException("No se puede entregar un pedido cancelado");
+        }
+
+        EstadoPedido estadoAnterior = pedido.getEstado();
+
+        // Descontar stock si es necesario
+        if (estadoAnterior != EstadoPedido.ENTREGADO) {
+            DescantorStock(pedido);
+        }
+        // Cambiar el estado
+        pedido.setEstado(EstadoPedido.ENTREGADO);
+    }
 }

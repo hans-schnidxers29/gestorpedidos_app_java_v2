@@ -325,28 +325,7 @@ public class PedidosControlador {
                 return "redirect:/pedidos/listarpedidos?error=true";
             }
 
-            // Guardar el estado anterior
-            EstadoPedido estadoAnterior = pedidoExistente.getEstado();
-
-            // Cambiar el estado a ENTREGADO
-            pedidoExistente.setEstado(EstadoPedido.ENTREGADO);
-
-            // Si el estado anterior no era ENTREGADO, descontar el stock
-            if (estadoAnterior != EstadoPedido.ENTREGADO) {
-                System.out.println("Estado cambió a ENTREGADO - Descontando stock...");
-                try {
-                    pedidoService.DescantorStock(pedidoExistente);
-                    System.out.println("Stock descontado exitosamente");
-                } catch (Exception e) {
-                    System.err.println("Error al descontar stock: " + e.getMessage());
-                    redirectAttributes.addFlashAttribute("error",
-                            "Error al descontar stock: " + e.getMessage());
-                    return "redirect:/pedidos/listarpedidos?error=true";
-                }
-            }
-
-            // Actualizar el pedido
-            pedidoService.Updatepedido(id, pedidoExistente);
+           pedidoService.EntregarPedido(id);
 
             System.out.println("Pedido " + id + " marcado como ENTREGADO");
             redirectAttributes.addFlashAttribute("success",

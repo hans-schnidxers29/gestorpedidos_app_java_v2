@@ -88,17 +88,54 @@
     <tr th:each="d : ${venta.detalles}">
         <td th:text="${d.producto.nombre}"></td>
         <td th:text="${d.cantidad}"></td>
-        <td th:text="${d.precioUnitario}"></td>
-        <td th:text="${d.subtotal}"></td>
+        <!--
+        ═══════════════════════════════════════════════════════════════
+        CAMBIO #1: Formatear precio unitario con 3 decimales
+        ANTES: th:text="${d.precioUnitario}"
+        AHORA: th:text="${#numbers.formatDecimal(d.precioUnitario, 1, 3)}"
+        ═══════════════════════════════════════════════════════════════
+        -->
+        <td th:text="${#numbers.formatDecimal(d.precioUnitario, 1, 3)}"></td>
+        <!--
+        ═══════════════════════════════════════════════════════════════
+        CAMBIO #2: Formatear subtotal con 3 decimales
+        ANTES: th:text="${d.subtotal}"
+        AHORA: th:text="${#numbers.formatDecimal(d.subtotal, 1, 3)}"
+        ═══════════════════════════════════════════════════════════════
+        -->
+        <td th:text="${#numbers.formatDecimal(d.subtotal, 1, 3)}"></td>
     </tr>
     </tbody>
 </table>
 
 <div class="totales">
-    <strong>Subtotal: </strong><span th:text="${subtotal}"></span><br/>
-    <strong>Impuesto: </strong><span th:text="${impuesto}"></span><br/>
+    <!--
+    ═══════════════════════════════════════════════════════════════
+    CAMBIO #3: Formatear subtotal con 3 decimales
+    ANTES: th:text="${subtotal}"
+    AHORA: th:text="${#numbers.formatDecimal(subtotal, 1, 3)}"
+    ═══════════════════════════════════════════════════════════════
+    -->
+    <strong>Subtotal: </strong><span th:text="${#numbers.formatDecimal(subtotal, 1, 3)}"></span><br/>
+
+    <!--
+    ═══════════════════════════════════════════════════════════════
+    CAMBIO #4: Formatear impuesto con 3 decimales
+    ANTES: th:text="${impuesto}"
+    AHORA: th:text="${#numbers.formatDecimal(impuesto, 1, 3)}"
+    ═══════════════════════════════════════════════════════════════
+    -->
+    <strong>Impuesto: </strong><span th:text="${#numbers.formatDecimal(impuesto, 1, 3)}"></span><br/>
+
     <strong style="font-size: 14px;">TOTAL A PAGAR: </strong>
-    <span style="font-size: 14px; font-weight: bold;" th:text="${venta.total}"></span>
+    <!--
+    ═══════════════════════════════════════════════════════════════
+    CAMBIO #5: Formatear total con 3 decimales
+    ANTES: th:text="${venta.total}"
+    AHORA: th:text="${#numbers.formatDecimal(venta.total, 1, 3)}"
+    ═══════════════════════════════════════════════════════════════
+    -->
+    <span style="font-size: 14px; font-weight: bold;" th:text="${#numbers.formatDecimal(venta.total, 1, 3)}"></span>
 </div>
 
 <div class="footer">
