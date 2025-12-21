@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -111,7 +113,9 @@ public class VentaServicioImp implements VentaServicio {
     }
 
     @Override
-    public BigDecimal sumaproductosPordia() {
-        return null;
+    public Long sumaproductosPordia(LocalDate fecha) {
+        LocalDateTime inicio = fecha.atStartOfDay(); // 00:00:00
+        LocalDateTime fin = fecha.plusDays(1).atStartOfDay(); // 00:00:00 del día siguiente
+        return detalleVentaRepositorio.sumaProductosPorDia(inicio, fin);
     }
 }

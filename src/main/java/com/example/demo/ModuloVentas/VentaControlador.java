@@ -49,6 +49,7 @@ public class VentaControlador {
         model.addAttribute("ventas", servicio.ListarVenta());
         model.addAttribute("totalRecaudado",servicio.totalVentas());
         model.addAttribute("sumaproductos",servicio.sumaproductos());
+        model.addAttribute("SumaProcDias", servicio.sumaproductosPordia(LocalDate.now()));
         return "ViewVentas/index";
     }
 
