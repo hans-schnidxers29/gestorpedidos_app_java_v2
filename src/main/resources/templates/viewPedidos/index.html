@@ -225,7 +225,7 @@
     <div th:if="${#lists.isEmpty(pedidos)}" class="alert alert-info">
         <i class="fas fa-info-circle me-2"></i>
         <strong>No hay pedidos registrados.</strong>
-        <a href="/pedidos/nuevo" class="btn btn-primary btn-sm ms-2">
+        <a href="/pedidos/nuevo" class="btn btn-sm ms-2 ">
             <i class="fas fa-plus me-1"></i>Crear primer pedido
         </a>
     </div>
@@ -282,6 +282,13 @@
                     </td>
                     <td>
                         <span class="badge bg-info" th:text="${pedido.detalles.size()} + ' item(s)'">0</span>
+                        <br>
+                        <small class="text-muted">
+                             <span th:each="detalle, iterStat : ${pedido.detalles}">
+                             <span th:text="${detalle.cantidad} + 'x ' + ${detalle.producto.nombre}"></span>
+                             <span th:if="${!iterStat.last}">, </span>
+                             </span>
+                        </small>
                     </td>
                     <td>
                         <span class="total-destacado">
@@ -293,23 +300,38 @@
                               th:text="${pedido.estado}">Estado</span>
                     </td>
                     <td class="text-center">
-                        <a th:href="@{/pedidos/ver/{id}(id=${pedido.id})}"
-                           class="btn btn-secondary btn-sm me-1"
-                           title="Ver Detalles">
-                            <i class="fas fa-eye"></i> Ver
+                        <a th:if="${pedido.estado.name() != 'ENTREGADO'}">
+                            <a th:href="@{/pedidos/ver/{id}(id=${pedido.id})}"
+                               class="btn btn-secondary btn-sm me-1"
+                               title="Ver Detalles">
+                                <i class="fas fa-eye"></i> Imprimir POS
+                            </a>
+
+                            <a th:href="@{/pedidos/editar/{id}(id=${pedido.id})}"
+                               class="btn btn-info btn-sm me-1"
+                               title="Editar"
+                               th:disabled="${pedido.estado.name() == 'ENTREGADO' || pedido.estado.name() == 'CANCELADO'}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+
+                            <a th:href="@{/pedidos/eliminar/{id}(id=${pedido.id})}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirmarEliminacion('¿Estás seguro de eliminar este pedido?')"
+                               title="Eliminar">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
                         </a>
-                        <a th:href="@{/pedidos/editar/{id}(id=${pedido.id})}"
-                           class="btn btn-info btn-sm me-1"
-                           title="Editar"
-                           th:disabled="${pedido.estado.name() == 'ENTREGADO' || pedido.estado.name() == 'CANCELADO'}">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <a th:href="@{/pedidos/eliminar/{id}(id=${pedido.id})}"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirmarEliminacion('¿Estás seguro de eliminar este pedido?')"
-                           title="Eliminar">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </a>
+                        <!-- Mensaje cuando está entregado -->
+                        <span th:if="${pedido.estado.name() == 'ENTREGADO'}"
+                              class="badge bg-success">
+                            <i class="fas fa-check-double"></i> Entregado
+                        </span>
+
+                        <!-- Mensaje cuando está cancelado -->
+                        <span th:if="${pedido.estado.name() == 'CANCELADO'}"
+                              class="badge bg-danger">
+                            <i class="fas fa-ban"></i> Cancelado
+                        </span>
                     </td>
                     <td class="text-center">
                         <!-- Botón Entregar - Solo visible si NO está entregado ni cancelado -->

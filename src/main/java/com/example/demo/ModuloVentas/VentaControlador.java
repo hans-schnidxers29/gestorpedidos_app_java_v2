@@ -48,10 +48,8 @@ public class VentaControlador {
     public String listar(Model model) {
         model.addAttribute("ventas", servicio.ListarVenta());
         model.addAttribute("totalRecaudado",servicio.totalVentas());
-        LocalDate fecha = LocalDate.now();
-        int mes = fecha.getDayOfMonth();
-        int anio = fecha.getYear();
-        model.addAttribute("ventasmes",servicio.sumapormes(mes,anio));
+        model.addAttribute("sumaproductos",servicio.sumaproductos());
+        model.addAttribute("SumaProcDias", servicio.sumaproductosPordia(LocalDate.now()));
         return "ViewVentas/index";
     }
 
