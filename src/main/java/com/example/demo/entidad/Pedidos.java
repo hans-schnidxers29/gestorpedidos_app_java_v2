@@ -1,14 +1,10 @@
 package com.example.demo.entidad;
-
-
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 
 
@@ -30,13 +26,13 @@ public class Pedidos {
     @Column(nullable = false)
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
 
-    @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
+    @Column(name = "subtotal", precision = 10, scale = 3, nullable = false)
     private BigDecimal subtotal = BigDecimal.ZERO;
 
-    @Column(name = "impuesto", precision = 10, scale = 2, nullable = false)
+    @Column(name = "impuesto", precision = 10, scale = 3, nullable = false)
     private BigDecimal impuesto = BigDecimal.ZERO;
 
-    @Column(name = "total", precision = 10, scale = 2, nullable = false)
+    @Column(name = "total", precision = 10, scale = 3, nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
 
     @Column(columnDefinition = "TEXT")
