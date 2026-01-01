@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ClienteControlador {
@@ -36,9 +37,10 @@ public class ClienteControlador {
     }
 
     @PostMapping("/crear")
-    public String guardarcliente(@ModelAttribute Cliente cliente, Model model){
+    public String guardarcliente(@ModelAttribute Cliente cliente, Model model, RedirectAttributes redirectAttributes){
         try {
             service.save(cliente);
+            redirectAttributes.addFlashAttribute("successs","Cliente creado exitosamente");
             return "redirect:/listarclientes";
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("Error", "El correo electrónico ya está en uso.");
