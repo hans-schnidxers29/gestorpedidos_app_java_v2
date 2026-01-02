@@ -27,4 +27,12 @@ public interface VentaRepositorio extends JpaRepository<Venta, Long> {
             "EXTRACT(YEAR FROM v.fechaVenta) ORDER BY MIN(v.fechaVenta) ASC")
     List<BigDecimal> listarTotalesAgrupadosPorMes();
 
+    @Query(value = "SELECT p.nombre, SUM(d.cantidad) as productos_vendidos \n" +
+            "from productos as p, detalle_venta as d \n" +
+            "WHERE p.id = d.producto_id\n" +
+            "GROUP by p.nombre\n" +
+            "ORDER by productos_vendidos DESC", nativeQuery = true)
+    List<Object[]> listarProductosVendidos();
+
+
 }

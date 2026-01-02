@@ -100,7 +100,7 @@
 </div>
 
 <th:block layout:fragment="scripts">
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function () {
             $("#tablaClientes").DataTable({
                 "responsive": true,
@@ -117,6 +117,16 @@
                     { "orderable": false, "targets": 6 } // La columna de acciones no se ordena
                 ]
             });
+
+            // 2. Notificaciones (Original restaurado)
+            const s = /*[[${success}]]*/ null;
+            const e = /*[[${error}]]*/ null;
+            const i = /*[[${info}]]*/ null;
+            const w = /*[[${warning}]]*/ null;
+
+
+            checkNotifications(s, e, i, w);
+
         });
     </script>
 </th:block>

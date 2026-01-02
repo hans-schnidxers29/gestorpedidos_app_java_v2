@@ -136,4 +136,16 @@ public class VentaServicioImp implements VentaServicio {
     public List<BigDecimal> listarTotalVentas() {
         return repositorioVenta.listarTotalesAgrupadosPorMes().stream().toList();
     }
+
+    @Override
+    public List<String> NombreProductos() {
+        List<Object[]>resultado =repositorioVenta.listarProductosVendidos();
+        return resultado.stream().map(objeto ->(String) objeto[0]).toList();
+    }
+
+    @Override
+    public List<Long> CantidadProductos() {
+        List<Object[]>resultado =repositorioVenta.listarProductosVendidos();
+        return resultado.stream().map(objeto -> (Long) objeto[1]).toList();
+    }
 }
